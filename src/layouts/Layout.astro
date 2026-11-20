@@ -1,14 +1,21 @@
+---
+import "../styles/global.css"
+
+const currentPath = Astro.url.pathname;
+---
+
 <!doctype html>
-<html lang="en">
+<html lang="es">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+		<title>Corral Wars</title>
 	</head>
-	<body>
+	<body class="bg-primary-800 text-accent-50 font-aldrich text-3xl relative">
+		<a class={`absolute top-6 left-6 text-xl text-accent-300/40 ${currentPath == "/" || "/temas" ? "hidden" : ""}`} href="/temas"><span>regresar a selector</span></a>
 		<slot />
 	</body>
 </html>
@@ -19,5 +26,6 @@
 		margin: 0;
 		width: 100%;
 		height: 100%;
+		box-sizing: border-box;
 	}
 </style>

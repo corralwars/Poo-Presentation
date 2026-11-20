@@ -1,11 +1,53 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
 <Layout>
-	<Welcome />
+	<section class="bg-[url(/img/backgrounds/splash.png)] w-full h-screen bg-cover flex justify-end items-center p-20">
+		<section class="h-full bg-secondary-500/60 backdrop-blur-md rounded-2xl px-14 py-6 flex flex-col items-center justify-center w-fit gap-12">
+			<h1 class="text-8xl font-pixelify-sans">CorralWars</h1>
+
+			<div class="flex flex-col justify-center items-center gap-6 relative">
+				<a class="menu-item z-20 hover:text-black" href="/temas/">
+					<span>Temas</span>
+				</a>
+
+				<a class="menu-item z-20 hover:text-black" href="/game">
+					<span>Jugar</span>
+				</a>
+				
+				<img
+					id="menu-mark"
+					src="/img/elements/mark.png"
+					class="absolute scale-150 opacity-0 transition-all duration-300 pointer-events-none"
+				/>
+			</div>
+		</section>
+	</section>
+
+	<script>
+		// @ts-nocheck
+		const links = document.querySelectorAll(".menu-item");
+		const mark = document.querySelector("#menu-mark");
+
+		let currentLink = null;
+
+		links.forEach((link) => {
+			link.addEventListener("mouseenter", () => {
+				currentLink = link;
+
+				mark.style.opacity = "1";
+				mark.style.top = `${link.offsetTop}px`;
+			});
+
+			link.addEventListener("mouseleave", () => {
+				setTimeout(() => {
+					if (currentLink === link) {
+						mark.style.opacity = "0";
+						currentLink = null;
+					}
+				}, 300);
+			});
+		});
+	</script>
 </Layout>

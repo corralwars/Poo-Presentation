@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Aldrich";
+  src: url("/fonts/Aldrich/Aldrich-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "PixelifySans";
+  src: url("/fonts/Pixelify_Sans/static/PixelifySans-Regular.ttf")
+    format("truetype");
+}
+
+@theme {
+  --color-primary-50: #f7edef;
+  --color-primary-100: #f0dbdf;
+  --color-primary-200: #e1b7bf;
+  --color-primary-300: #d293a0;
+  --color-primary-400: #c36f80;
+  --color-primary-500: #b44b60;
+  --color-primary-600: #903c4d;
+  --color-primary-700: #6c2d3a;
+  --color-primary-800: #481e26;
+  --color-primary-900: #240f13;
+  --color-primary-950: #190b0d;
+
+  --color-secondary-50: #faeeeb;
+  --color-secondary-100: #f4dcd7;
+  --color-secondary-200: #e9baaf;
+  --color-secondary-300: #de9787;
+  --color-secondary-400: #d3745f;
+  --color-secondary-500: #c85137;
+  --color-secondary-600: #a0412c;
+  --color-secondary-700: #783121;
+  --color-secondary-800: #502116;
+  --color-secondary-900: #28100b;
+  --color-secondary-950: #1c0b08;
+
+  --color-accent-50: #f0f4f4;
+  --color-accent-100: #e2e9e9;
+  --color-accent-200: #c4d3d4;
+  --color-accent-300: #a7bdbe;
+  --color-accent-400: #8aa7a8;
+  --color-accent-500: #6c9193;
+  --color-accent-600: #577475;
+  --color-accent-700: #415758;
+  --color-accent-800: #2b3a3b;
+  --color-accent-900: #161d1d;
+  --color-accent-950: #0f1415;
+
+  --font-aldrich: "Aldrich", sans-serif;
+  --font-pixelify-sans: "PixelifySans", sans-serif;
+}

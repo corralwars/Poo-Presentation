@@ -1,0 +1,236 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout>
+  <section class="w-full h-screen flex justify-center items-center">
+    <a class="absolute top-6 left-6 text-xl text-accent-300/40" href="/"><span>regresar a inicio</span></a>
+    <!-- MENÚ -->
+    <div class="w-2/5 h-screen flex justify-center items-center">
+      <ul class="flex flex-col gap-6">
+        <li data-selection="contexto">
+          <a href="#">
+            <span class="hover:text-secondary-400">Contexto del Proyecto</span>
+          </a>
+        </li>
+
+        <li data-selection="clases">
+          <a href="#">
+            <span class="hover:text-secondary-400">Modelado de Clases</span>
+          </a>
+        </li>
+
+        <li data-selection="codificacion">
+          <a href="#">
+            <span class="hover:text-secondary-400">Codificación del modelo</span>
+          </a>
+        </li>
+
+        <li data-selection="interfaz">
+          <a href="#">
+            <span class="hover:text-secondary-400">Interfaz gráfica</span>
+          </a>
+        </li>
+
+        <li data-selection="persistencia">
+          <a href="#">
+            <span class="hover:text-secondary-400">Conexión y manejo de la persistencia</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- IMÁGENES -->
+    <div
+      id="images"
+      class="w-3/5 h-screen flex justify-center items-center relative overflow-hidden"
+    >
+      <img
+        data-layer="contexto"
+        class="absolute h-full max-w-none left-0 opacity-0 transition-opacity duration-300"
+        src="/img/backgrounds/madre_ecuanime.png"
+        alt=""
+      />
+
+      <img
+        data-layer="clases"
+        class="absolute h-full max-w-none left-0 opacity-0 transition-opacity duration-300"
+        src=""
+        alt=""
+      />
+
+      <img
+        data-layer="codificacion"
+        class="absolute h-full max-w-none left-0 opacity-0 transition-opacity duration-300"
+        src=""
+        alt=""
+      />
+
+      <img
+        data-layer="interfaz"
+        class="absolute h-full max-w-none left-0 opacity-0 transition-opacity duration-300"
+        src=""
+        alt=""
+      />
+
+      <img
+        data-layer="persistencia"
+        class="absolute h-full max-w-none left-0 opacity-0 transition-opacity duration-300"
+        src=""
+        alt=""
+      />
+    </div>
+  </section>
+</Layout>
+
+<script>
+// @ts-nocheck
+import { Application, Assets, AnimatedSprite } from "pixi.js";
+import gsap from "gsap";
+
+// =========================================
+// PIXI APPLICATION
+// =========================================
+
+const app = new Application();
+
+const styles = getComputedStyle(document.documentElement);
+const secondary = styles.getPropertyValue("--color-accent-800").trim();
+
+await app.init({
+  width: 800,
+  height: 800,
+  background: secondary,
+  antialias: false,
+});
+
+const container = document.getElementById("images");
+
+if (!container) {
+  throw new Error("No se encontró el contenedor #images");
+}
+
+container.appendChild(app.canvas);
+
+// =========================================
+// CANVAS
+// =========================================
+
+app.canvas.classList.add("rounded-full", "absolute");
+
+app.canvas.style.transition = "opacity 300ms ease";
+app.canvas.style.imageRendering = "pixelated";
+
+// =========================================
+// CARGAR IDLE
+// =========================================
+
+const textures = await Promise.all([
+  Assets.load("/img/sprites/roxxane_flint/flint_0001.png"),
+  Assets.load("/img/sprites/roxxane_flint/flint_0002.png"),
+  Assets.load("/img/sprites/roxxane_flint/flint_0003.png"),
+  Assets.load("/img/sprites/roxxane_flint/flint_0004.png"),
+]);
+
+textures.forEach((texture) => {
+  texture.source.scaleMode = "nearest";
+});
+
+const idle = new AnimatedSprite(textures);
+
+idle.anchor.set(0.5);
+idle.x = app.screen.width / 2;
+idle.y = app.screen.height / 2;
+idle.scale.set(15);
+idle.animationSpeed = 0.05;
+idle.loop = true;
+idle.play();
+
+app.stage.addChild(idle);
+
+// =========================================
+// SELECCIÓN DEL MENÚ + GSAP
+// =========================================
+
+const menuItems = document.querySelectorAll("[data-selection]");
+const layers = container.querySelectorAll("[data-layer]");
+
+// Animación activa
+let activeAnimation = null;
+let activeLayer = null;
+
+function stopImageAnimation() {
+  if (activeAnimation) {
+    activeAnimation.kill();
+    activeAnimation = null;
+  }
+
+  if (activeLayer) {
+    gsap.set(activeLayer, { x: 0 });
+    activeLayer = null;
+  }
+}
+
+function animateImage(layer) {
+  stopImageAnimation();
+
+  activeLayer = layer;
+
+  // Ancho que puede desplazarse la imagen dentro del contenedor
+  const containerWidth = container.clientWidth;
+  const imageWidth = layer.getBoundingClientRect().width;
+
+  const distance = Math.max(0, imageWidth - containerWidth);
+
+  // Si la imagen no es más ancha que el contenedor, no desplazamos
+  if (distance <= 0) return;
+
+  activeAnimation = gsap.to(layer, {
+    x: -distance,
+    duration: 20,
+    repeat: -1,
+    yoyo: true,
+  });
+}
+
+function selectSection(selection) {
+  layers.forEach((layer) => {
+    const active = layer.dataset.layer === selection;
+
+    layer.classList.toggle("opacity-100", active);
+    layer.classList.toggle("opacity-0", !active);
+  });
+
+  app.canvas.style.opacity = selection === null ? "1" : "0";
+
+  const selectedLayer = [...layers].find(
+    (layer) => layer.dataset.layer === selection
+  );
+
+  if (selectedLayer) {
+    animateImage(selectedLayer);
+  } else {
+    stopImageAnimation();
+  }
+}
+
+// =========================================
+// EVENTOS
+// =========================================
+
+menuItems.forEach((item) => {
+  item.addEventListener("mouseenter", () => {
+    selectSection(item.dataset.selection);
+  });
+
+  item.addEventListener("mouseleave", () => {
+    selectSection(null);
+  });
+});
+
+// =========================================
+// ESTADO INICIAL
+// =========================================
+
+selectSection(null);
+</script>
