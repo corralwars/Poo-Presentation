@@ -1,7 +1,9 @@
 ---
+import Menu from "../components/menu.jsx";
 import "../styles/global.css"
 
 const currentPath = Astro.url.pathname;
+const {title = "CorralWars"} = Astro.props;
 ---
 
 <!doctype html>
@@ -9,12 +11,13 @@ const currentPath = Astro.url.pathname;
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
+		<link rel="icon" href="/img/sprites/roxxane_flint/flint_0001.png" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Corral Wars</title>
+		<title>{title}</title>
 	</head>
-	<body class="bg-primary-800 text-accent-50 font-aldrich text-3xl relative">
+	<body class="bg-primary-800 text-accent-50 font-aldrich text-3xl relative z-0 overflow-x-hidden">
+
+		<Menu client:load/>
 		<a class={`absolute top-6 left-6 text-xl text-accent-300/40 ${currentPath == "/" || "/temas" ? "hidden" : ""}`} href="/temas"><span>regresar a selector</span></a>
 		<slot />
 	</body>
