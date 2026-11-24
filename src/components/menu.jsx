@@ -39,7 +39,7 @@ function Menu() {
     {
       id: "persistencia",
       label: "Conexión y Manejo de la Persistencia",
-      image: "/img/backgrounds/persistencia.png",
+      image: "/img/backgrounds/icons.png",
     },
   ];
 
@@ -163,11 +163,6 @@ function Menu() {
 
         const overflow = Math.max(0, imageWidth - containerWidth);
 
-        gsap.set(selectedImage, {
-          x: 0,
-          opacity: 1,
-        });
-
         gsap.to(selectedImage, {
           x: -overflow,
           duration: 5,
@@ -263,7 +258,7 @@ function Menu() {
               }}
               src={item.image}
               alt={item.label}
-              className="absolute top-0 left-0 h-full w-auto max-w-none object-cover opacity-0"
+              className={`absolute top-0 left-0 h-full w-auto max-w-none object-cover transition-opacity delay-75 ${isSelected == item.id ? "opacity-100" : "opacity-0"}`}
             />
           ))}
         </div>
