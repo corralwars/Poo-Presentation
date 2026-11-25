@@ -24,10 +24,10 @@ function Menu() {
     {
       id: "modelado",
       label: "Modelado de Clases",
-      image: "/img/backgrounds/modelado.png",
+      image: "/img/backgrounds/model.png",
     },
     {
-      id: "codificación",
+      id: "codificacion",
       label: "Codificación del Modelo",
       image: "/img/backgrounds/code.png",
     },
