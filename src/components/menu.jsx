@@ -29,7 +29,7 @@ function Menu() {
     {
       id: "codificación",
       label: "Codificación del Modelo",
-      image: "/img/backgrounds/codificacion.png",
+      image: "/img/backgrounds/code.png",
     },
     {
       id: "interfaz",

@@ -1,7 +1,195 @@
+
 ---
 import Layout from "../layouts/Layout.astro";
+
+import { SiGodotengine } from "react-icons/si";
+import { SiNestjs } from "react-icons/si";
+import { SiMongodb } from "react-icons/si";
 ---
 
 <Layout>
-  <h1>contexto</h1>
+  <section class="w-full h-screen bg-linear-to-t from-primary-800 to-accent-800">
+    <div class="grid grid-cols-5 grid-rows-5 gap-4 w-full h-screen p-12">
+
+      <!-- Título -->
+      <div class="col-span-3 row-span-2 bg-primary-500/50 backdrop-blur-5xl flex flex-col justify-center items-center gap-6 rounded-2xl">
+        <h1 class="text-6xl font-pixelify-sans">
+          Contexto del proyecto
+        </h1>
+      </div>
+
+      <!-- Tecnologías -->
+      <div class="col-span-3 row-span-3 bg-primary-500/50 backdrop-blur-5xl flex justify-center items-center gap-6 rounded-2xl col-start-1 row-start-3">
+
+        <div class="flex flex-col gap-6 bg-accent-700/40 p-12 rounded-2xl border-2 border-accent-800">
+          <p class="text-8xl">
+            <SiGodotengine />
+          </p>
+          <p class="text-8xl">
+            <SiNestjs />
+          </p>
+          <p class="text-8xl">
+            <SiMongodb />
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-6 bg-accent-700/40 p-12 rounded-2xl border-2 border-accent-800">
+          <img
+            class="aspect-square object-cover w-[96px]"
+            src="/img/sprites/godot/godot idle_0001.png"
+            alt="Godot"
+          />
+          <img
+            class="aspect-square object-cover w-[96px]"
+            src="/img/sprites/nestjs/nestjs.png"
+            alt="NestJS"
+          />
+          <img
+            class="aspect-square object-cover w-[96px]"
+            src="/img/sprites/mongodb/mongodb idle_0001.png"
+            alt="MongoDB"
+          />
+        </div>
+
+      </div>
+
+      <!-- Personaje -->
+      <div
+        id="character"
+        class="relative overflow-hidden col-span-2 row-span-5 bg-primary-500/50 backdrop-blur-5xl flex justify-center items-center rounded-2xl col-start-4 row-start-1"
+      >
+      </div>
+
+    </div>
+  </section>
 </Layout>
+
+<script>
+// @ts-nocheck
+import { Application, Assets, AnimatedSprite } from "pixi.js";
+
+// =========================================
+// CONTENEDOR
+// =========================================
+
+const container = document.getElementById("character");
+
+if (!container) {
+  throw new Error("No se encontró el contenedor #character");
+}
+
+// =========================================
+// PIXI APPLICATION
+// =========================================
+
+const app = new Application();
+
+const styles = getComputedStyle(document.documentElement);
+const secondary = styles
+  .getPropertyValue("--color-primary-700")
+  .trim();
+
+await app.init({
+  width: container.clientWidth,
+  height: container.clientHeight,
+  background: secondary,
+  antialias: false,
+  resolution: window.devicePixelRatio || 1,
+  autoDensity: true,
+});
+
+container.appendChild(app.canvas);
+
+// =========================================
+// CANVAS
+// =========================================
+
+app.canvas.style.position = "absolute";
+app.canvas.style.inset = "0";
+app.canvas.style.width = "100%";
+app.canvas.style.height = "100%";
+app.canvas.style.imageRendering = "pixelated";
+app.canvas.style.borderRadius = "1rem";
+
+// =========================================
+// CARGAR IDLE
+// =========================================
+
+const textures = await Promise.all([
+  Assets.load("/img/sprites/solstice/Idle/sols%20idle_0001.png"),
+  Assets.load("/img/sprites/solstice/Idle/sols%20idle_0002.png"),
+  Assets.load("/img/sprites/solstice/Idle/sols%20idle_0003.png"),
+  Assets.load("/img/sprites/solstice/Idle/sols%20idle_0004.png"),
+  Assets.load("/img/sprites/solstice/Idle/sols%20idle_0005.png"),
+  Assets.load("/img/sprites/solstice/Idle/sols%20idle_0006.png"),
+  Assets.load("/img/sprites/solstice/Idle/sols%20idle_0007.png"),
+  Assets.load("/img/sprites/solstice/Idle/sols%20idle_0008.png"),
+  Assets.load("/img/sprites/solstice/Idle/sols%20idle_0009.png"),
+  Assets.load("/img/sprites/solstice/Idle/sols%20idle_0010.png"),
+  Assets.load("/img/sprites/solstice/Idle/sols%20idle_0011.png"),
+  Assets.load("/img/sprites/solstice/Idle/sols%20idle_0012.png"),
+]);
+
+textures.forEach((texture) => {
+  texture.source.scaleMode = "nearest";
+});
+
+const idle = new AnimatedSprite(textures);
+
+idle.anchor.set(0.5);
+idle.animationSpeed = 0.09;
+idle.loop = true;
+idle.play();
+
+app.stage.addChild(idle);
+
+// =========================================
+// CENTRAR PERSONAJE
+// =========================================
+
+function centerCharacter() {
+  idle.x = app.screen.width / 2;
+  idle.y = app.screen.height / 2;
+
+  // Escala proporcional al tamaño del contenedor
+  const availableWidth = app.screen.width * 0.8;
+  const availableHeight = app.screen.height * 0.8;
+
+  const textureWidth = idle.width / idle.scale.x;
+  const textureHeight = idle.height / idle.scale.y;
+
+  const scale = Math.min(
+    availableWidth / textureWidth,
+    availableHeight / textureHeight
+  );
+
+  idle.scale.set(scale);
+}
+
+centerCharacter();
+
+// =========================================
+// REDIMENSIONAMIENTO AUTOMÁTICO
+// =========================================
+
+const resizeObserver = new ResizeObserver(() => {
+  const width = container.clientWidth;
+  const height = container.clientHeight;
+
+  if (width === 0 || height === 0) return;
+
+  app.renderer.resize(width, height);
+  centerCharacter();
+});
+
+resizeObserver.observe(container);
+
+// =========================================
+// LIMPIEZA AL NAVEGAR
+// =========================================
+
+document.addEventListener("astro:before-swap", () => {
+  resizeObserver.disconnect();
+  app.destroy({ removeView: true });
+});
+</script>
